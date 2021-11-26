@@ -7,8 +7,8 @@ int main(void)
 {
 	/*char path[] = "/bin/cat";*/
 	/*char path[] = "./fork.out";*/
-	char path[] = "./get";
-	char *argv[] = {"./get", NULL};
+	char path[] = "/bin/ls";
+	char *argv[] = {"/bin/ls", "-l", "/tmp", NULL};
 	char *envp[] = {NULL};
 	pid_t pid, pid_p;
 	int status, i = 0;
@@ -17,7 +17,7 @@ int main(void)
 	printf("--------------------------\n");
 	pid_p = getpid();
 	i = 0;
-	while (1)
+	while (i < 5)
 	{
 		pid = fork();
 	
