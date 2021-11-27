@@ -62,7 +62,6 @@ int main (void)
 			if (strcmp(argv[0], "exit") == 0)
 			{
 				printf("---exit---\n");
-				i = 0;
 			}
 			printf("before exe: %d\n", getpid());
 			sleep(2);
