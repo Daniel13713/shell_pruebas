@@ -19,10 +19,12 @@ int main (void)
 	pid_t pid, pid_p;
 	int status, i = 0;
 	char *line = NULL;
-	char **argv = NULL;
+	char *argv[2];
+	/*char *argv1[] = {"/bin/ls", NULL};*/
 	ssize_t nread = 0;
-        size_t len = 0;
+        size_t len = 1024;
 	char *promt = "$ ";
+	char *delimiter = "\n";
  	/*char *binaryPath = "/bin/ls";*/
 
 
@@ -36,20 +38,19 @@ int main (void)
 	printf("Start Shell\n");
 	printf("--------------------------\n");
 	pid_p = getpid();
-	i = 0;
-	while (1)
+	i = 1;
+	while (i)
 	{
 
 		write(STDOUT_FILENO, promt, 2);
 		nread = getline(&line, &len, stdin);
-		printf("nread = %ld\n", nread);
-		if (strcmp("exit", line) == 0)
-		{
-			break;
-		}
+
 		write(STDOUT_FILENO, line, nread);
+		argv[0] = strtok(line, delimiter);
+		argv[1] = NULL;
 		pid = fork();
 	
+		printf("pid = %d\n", getpid());
 		if (pid == -1)
 		{
 			printf("Error");
@@ -57,12 +58,15 @@ int main (void)
 		else if (pid == 0)
 		{
 
-			argv[0] = line;
-			argv[1] = NULL;
-			printf("argv = %s, len = %ld\n", argv[0], strlen(argv[0]));
+			/*printf("argv = %s, line = %s\n", argv[0], line);*/
+			if (strcmp(argv[0], "exit") == 0)
+			{
+				printf("---exit---\n");
+				i = 0;
+			}
 			printf("before exe: %d\n", getpid());
 			sleep(2);
-			execve(line, argv, envp);
+			execve(argv[0], argv, envp);
 			printf("Child finish\n");
 			printf("----------------\n");
 		}
@@ -72,7 +76,6 @@ int main (void)
 			sleep(2);
 			wait(&status);
 		}
-		i++;
 	}
 	free(line);
 
