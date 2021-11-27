@@ -48,6 +48,10 @@ int main (void)
 		write(STDOUT_FILENO, line, nread);
 		argv[0] = strtok(line, delimiter);
 		argv[1] = NULL;
+		if (strcmp(argv[0], "exit") == 0)
+		{	
+			break;
+		}
 		pid = fork();
 	
 		printf("pid = %d\n", getpid());
@@ -59,10 +63,7 @@ int main (void)
 		{
 
 			/*printf("argv = %s, line = %s\n", argv[0], line);*/
-			if (strcmp(argv[0], "exit") == 0)
-			{
-				printf("---exit---\n");
-			}
+		
 			printf("before exe: %d\n", getpid());
 			sleep(2);
 			execve(argv[0], argv, envp);
