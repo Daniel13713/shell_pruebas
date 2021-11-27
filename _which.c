@@ -3,15 +3,17 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 int main(int ac, char **av)
 {
 	unsigned int i;
+	int j = 0;
 	struct stat st;
-	char *token = NULL;
+	char *token[20];
 	char *delim = ":";
-	char *address;
-	char *path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin";
+	char *address = NULL;
+	char path[1024] = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin";
 
 	if (ac < 2)
 	{
@@ -19,23 +21,43 @@ int main(int ac, char **av)
 		return (1);
 	}
 	i = 1;
-	
-	token = strtok(path, delim);
 
+	printf("path: %s\n", path);
+	token[j] = strtok(path, delim);
+	while (token[j])
+	{
+		printf("tokenw: %s\n", token[j]);
+		j++;
+		token[j] = strtok(NULL, delim);
+	}
+	address = malloc(1024 * sizeof(char));
+	if (!address)
+	{
+		free(address);
+		perror("No allocate");
+		exit(-1);
+	}
 	while (av[i])
 	{
-		while (token)
+		j = 0;
+		while (token[j])
 		{
-			address = strcat(token, av[i]);
+		
+			printf("In while\n");
+			token[j] = strcat(token[j], "/");
+			address = strcat(token[j], av[i]);
+			printf("address: %s\n", address);
 			if (stat(address, &st) == 0)
 			{
 				printf("%s\n", address);
 				return (0);
 			}
-			token = strtok(NULL, delim);
+			j++;
 		}
 		printf(" NOT FOUND\n");
 		i++;
 	}
+
+	free(address);
 	return (0);
 }
