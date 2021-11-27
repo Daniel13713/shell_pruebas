@@ -5,15 +5,17 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+extern char **environ;
+
 int main(int ac, char **av)
 {
 	unsigned int i;
-	int j = 0;
+	int j = 0, k = 0;
 	struct stat st;
-	char *token[20];
-	char *delim = ":";
-	char *address = NULL;
-	char path[1024] = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin";
+	char *token[20], *env[20];
+	char *delim = ":=";
+	char *address;
+	/*char path[1024] = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin";*/
 
 	if (ac < 2)
 	{
@@ -21,12 +23,19 @@ int main(int ac, char **av)
 		return (1);
 	}
 	i = 1;
-
-	printf("path: %s\n", path);
-	token[j] = strtok(path, delim);
+	while (environ[k])
+	{
+		env[k] = strtok(environ[k], "=");
+		if (strcmp(env[k], "PATH") == 0)
+		{
+			break;
+		}
+		k++;
+	}
+	env[k + 1] = strtok(NULL, "=");
+	token[j] = strtok(env[k + 1], delim);
 	while (token[j])
 	{
-		printf("tokenw: %s\n", token[j]);
 		j++;
 		token[j] = strtok(NULL, delim);
 	}
@@ -43,13 +52,13 @@ int main(int ac, char **av)
 		while (token[j])
 		{
 		
-			printf("In while\n");
-			token[j] = strcat(token[j], "/");
-			address = strcat(token[j], av[i]);
-			printf("address: %s\n", address);
+			strcpy(address, token[j]);
+			strcat(address, "/");
+			strcat(address, av[i]);
 			if (stat(address, &st) == 0)
 			{
 				printf("%s\n", address);
+				free(address);
 				return (0);
 			}
 			j++;
@@ -57,7 +66,6 @@ int main(int ac, char **av)
 		printf(" NOT FOUND\n");
 		i++;
 	}
-
 	free(address);
 	return (0);
 }
