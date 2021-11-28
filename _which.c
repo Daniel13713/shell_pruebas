@@ -17,6 +17,7 @@ int main(int ac, char **av)
 	char *address;
 	/*char path[1024] = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin";*/
 
+	printf("PATH: %s\n", getenv("PATH"));
 	if (ac < 2)
 	{
 		printf("Usage: %s path_to_file ...\n", av[0]);
@@ -28,11 +29,13 @@ int main(int ac, char **av)
 		env[k] = strtok(environ[k], "=");
 		if (strcmp(env[k], "PATH") == 0)
 		{
+			env[k + 1] = strtok(NULL, "=");
+			printf("%s\n", env[k + 1]);
 			break;
 		}
 		k++;
 	}
-	env[k + 1] = strtok(NULL, "=");
+	printf("PATH: %s\n", getenv("PATH"));
 	token[j] = strtok(env[k + 1], delim);
 	while (token[j])
 	{
