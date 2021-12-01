@@ -29,7 +29,7 @@ int main(int ac, char **av)
 		env[k] = strtok(environ[k], "=");
 		if (strcmp(env[k], "PATH") == 0)
 		{
-			env[k + 1] = strtok(NULL, "=");
+			env[k + 1] = strtok(NULL, "\n");
 			printf("%s\n", env[k + 1]);
 			break;
 		}
