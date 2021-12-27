@@ -1,10 +1,70 @@
-#include "duriv.h"
 #include <stdio.h> 
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+
+/**
+ * _strlen - return the length of a string
+ *
+ * @s: pointer to string
+ * Return: Length of a string
+ */
+
+int _strlen(char *s)
+{
+	int i;
+
+	if (s == NULL)
+	{
+		return (0);
+	}
+	i = 0;
+	while (s[i] != '\0')
+	{
+		i++;
+	}
+	return (i);
+}
+
+/**
+  * _strcmp - comparing two strings
+  *
+  * @s1: String to compare
+  * @s2: String to compare
+  *
+  * Return: result
+  */
+int _strcmp(char *s1, char *s2)
+{
+	int i = 0;
+
+	while (s1[i] == s2[i] && s1[i] != '\0' && s2[i] != '\0')
+	{
+		i++;
+	}
+	return (s1[i] - s2[i]);
+}
+
+/**
+ * free_grid - free memory space of a grid
+ *
+ * @grid: 2-dimensional array
+ * @height: rows of matrix
+ * Return: Nothing
+ */
+
+void free_grid(char **grid, int height)
+{
+	int i;
+
+	for (i = 0; i < height; i++)
+	{
+		free(grid[i]);
+	}
+	free(grid);
+}
 
 extern char **environ;
 
@@ -15,67 +75,34 @@ extern char **environ;
  * Return: Value of the Variable
  */
 
-char *_getenv(const char *name)
+char *_getenv(char *name)
 {
-	p_list *head, *temp;
-	char *envName = NULL, *envValue = NULL, *get = NULL;
-	int k = 0, n = -1;
-	
-	head = NULL;
-	while (environ[k])
+	int i = 0;
+	char *envName = NULL, *value = NULL;
+
+	while (environ[i])
 	{
-		envName = strtok(environ[k], "=");
-		envValue = strtok(NULL, "\n");
-		temp = add_node_end(&head, envName, envValue);
-		if (temp != NULL)
+		envName = strtok(environ[i], "=");
+		if (_strcmp(envName, NAME) == 0)
 		{
-			if (strcmp(temp->name, name) == 0 && temp->value)
-			{	
-				n = k;
-				get = strdup(temp->value);
-			}
+			value = strtok(environ[i], NULL);
+			return(value);
 		}
-		k++;
+		i++;
 	}
-	free_list(&head);
-	if (n != -1)
-	{
-		return (get);
-	}
-	/*
-	int k = 0;
-	char *env[1024];
-
-
-	while (environ[k])
-	{
-		env[k] = strtok(environ[k], "=");
-		if (strcmp(env[k], name) == 0)
-		{	
-			env[k + 1] = strtok(NULL, "\n");
-			return (env[k + 1]);
-		}
-		k++;
-	}*/
-	return (NULL);
-
+	
 }
 
 int main(int ac, char **av)
 {
-	char *result;
+	int i = 0
 	/*printf("%s\n", getenv(av[1]));*/
 	printf("ac: %d\n", ac);
-	result = _getenv(av[1]);
-	if (result)
+	printf("%s\n", _getenv(av[1]));
+	while (environ[i])
 	{
-		printf("%s\n", result);
+		printf("%s\n", environ[i]);
+		i++;
 	}
-	else
-	{
-		printf("NULL\n");
-	}
-	free(result);
 	return (0);
 }
-

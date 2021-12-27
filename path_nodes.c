@@ -1,5 +1,10 @@
 #include "duriv.h"
 
+typedef struct c_list
+{
+	char *data;
+	struct c_list *next;
+} c_list;
 
 char *_getenv(const char *name);
 /**
@@ -9,10 +14,10 @@ char *_getenv(const char *name);
  * Return: Nothing
  */
 
-void free_p_list(p_list **head)
+void free_p_listi(c_list **head)
 {
-	p_list *current = NULL;
-	p_list *next_free = NULL;
+	c_list *current = NULL;
+	c_list *next_free = NULL;
 
 	if (head == NULL)
 	{
@@ -37,13 +42,13 @@ void free_p_list(p_list **head)
  * Return: pointer to structure (pointer) or null if fail
  */
 
-p_list *add_nodeint_end(p_list **head, const char *str)
+c_list *add_nodeint_endi(c_list **head, const char *str)
 {
-	p_list *new = NULL;
-	p_list *last = NULL;
+	c_list *new = NULL;
+	c_list *last = NULL;
 
 
-	new = malloc(sizeof(p_list));
+	new = malloc(sizeof(c_list));
 	if (!new)
 	{
 		free(new);
@@ -77,14 +82,14 @@ int main(void)
 {
 	char *p_dirs;
 	char *dirs = NULL;
-	p_list *head;
-	p_list *temp;
+	c_list *head;
+	c_list *temp;
 
 	head = NULL;
 	p_dirs = _getenv("PATH");
 	dirs = strtok(p_dirs, ":");
 	
-	temp = add_nodeint_end(&head, dirs);
+	temp = add_nodeint_endi(&head, dirs);
 	while (dirs)
 	{
 		printf("%s\n", dirs);
@@ -92,12 +97,13 @@ int main(void)
 		dirs = strtok(NULL, ":");
 		if (dirs == NULL)
 		{
-			free_p_list(&head);
+			free_p_listi(&head);
 			break;
 		}
-		temp->next = add_nodeint_end(&head, dirs);
+		temp->next = add_nodeint_endi(&head, dirs);
 		temp = temp->next;
 
 	}
+	free(p_dirs);
 	return (0);
 }

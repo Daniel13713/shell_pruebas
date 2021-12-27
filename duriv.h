@@ -18,7 +18,7 @@ typedef struct p_list
 } p_list;
 
 /* Mandatory Prototypes */
-char *_getenv(const char *name);
+char *_getenv(char *name);
 int _setenv(const char *name, const char *value, int overwrite);
 int _unsetenv(const char *name);
 
